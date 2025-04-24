@@ -309,7 +309,26 @@ public class TelaFinanancas extends javax.swing.JFrame {
     }//GEN-LAST:event_buttonMesAtualActionPerformed
 
     private void buttonExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonExcluirActionPerformed
-        // TODO add your handling code here:
+        int row = jTable.getSelectedRow();
+        if (row == -1) {
+            JOptionPane.showMessageDialog(this, "Selecione uma informaçaõ para deletar!");
+            return;
+        }
+
+        String nome = jTable.getModel().getValueAt(row, 0).toString();
+        int confirm = JOptionPane.showConfirmDialog(this, "Tem certeza que deseja deletar essa informação?", "Confirmar", JOptionPane.YES_NO_OPTION);
+
+         if (confirm == JOptionPane.YES_OPTION) {
+              try {
+                  //alterar
+                  daoFinancas.deleteFinanca(row);
+                   JOptionPane.showMessageDialog(this, "Alimento removido com sucesso!");
+                    listagemTabela(); // Atualiza a tabela após remoção
+                    
+              }catch(SQLException ex){
+                  JOptionPane.showMessageDialog(this, "Erro ao deletar: " + ex.getMessage());
+              }
+         }
     }//GEN-LAST:event_buttonExcluirActionPerformed
 
     private void buttonCadastrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonCadastrarActionPerformed
