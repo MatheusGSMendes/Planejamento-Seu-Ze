@@ -78,6 +78,8 @@ public class TelaFinanancas extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jFTF = new javax.swing.JFormattedTextField();
+        jRBganho = new javax.swing.JRadioButton();
+        jRBgasto = new javax.swing.JRadioButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -85,11 +87,9 @@ public class TelaFinanancas extends javax.swing.JFrame {
 
         jLabel1.setBackground(new java.awt.Color(0, 0, 0));
         jLabel1.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel1.setForeground(new java.awt.Color(0, 0, 0));
         jLabel1.setText("Nome: ");
 
         jLabel2.setFont(new java.awt.Font("Segoe UI Black", 0, 24)); // NOI18N
-        jLabel2.setForeground(new java.awt.Color(0, 0, 0));
         jLabel2.setText("Finanças Anual Seu José");
 
         jTable.setModel(new javax.swing.table.DefaultTableModel(
@@ -107,19 +107,15 @@ public class TelaFinanancas extends javax.swing.JFrame {
 
         jLabel3.setBackground(new java.awt.Color(0, 0, 0));
         jLabel3.setFont(new java.awt.Font("Segoe UI", 2, 14)); // NOI18N
-        jLabel3.setForeground(new java.awt.Color(0, 0, 0));
         jLabel3.setText("De:");
 
         jLabel4.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel4.setForeground(new java.awt.Color(0, 0, 0));
         jLabel4.setText("Até:");
 
         jLabel5.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel5.setForeground(new java.awt.Color(0, 0, 0));
         jLabel5.setText("Classificação:");
 
         buttonMesAtual.setBackground(new java.awt.Color(51, 255, 51));
-        buttonMesAtual.setForeground(new java.awt.Color(0, 0, 0));
         buttonMesAtual.setText("Mês Atual");
         buttonMesAtual.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -128,7 +124,6 @@ public class TelaFinanancas extends javax.swing.JFrame {
         });
 
         jLabel6.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel6.setForeground(new java.awt.Color(0, 0, 0));
         jLabel6.setText("Valor:");
 
         txtValor.addActionListener(new java.awt.event.ActionListener() {
@@ -138,11 +133,9 @@ public class TelaFinanancas extends javax.swing.JFrame {
         });
 
         jLabel7.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel7.setForeground(new java.awt.Color(0, 0, 0));
         jLabel7.setText("Data Entrada: ");
 
         buttonCadastrar.setBackground(new java.awt.Color(51, 51, 255));
-        buttonCadastrar.setForeground(new java.awt.Color(0, 0, 0));
         buttonCadastrar.setText("CADASTRAR");
         buttonCadastrar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -158,26 +151,30 @@ public class TelaFinanancas extends javax.swing.JFrame {
         });
 
         jLabel8.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel8.setForeground(new java.awt.Color(0, 0, 0));
         jLabel8.setText("Recebidos:");
 
         jLabel9.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel9.setForeground(new java.awt.Color(0, 0, 0));
         jLabel9.setText("Gastos: ");
 
         jLabel10.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel10.setForeground(new java.awt.Color(0, 0, 0));
         jLabel10.setText("Diferença:");
 
         jButton1.setBackground(new java.awt.Color(51, 255, 51));
-        jButton1.setForeground(new java.awt.Color(0, 0, 0));
         jButton1.setText("GANHO+");
 
         jButton2.setBackground(new java.awt.Color(255, 51, 51));
-        jButton2.setForeground(new java.awt.Color(0, 0, 0));
         jButton2.setText("GASTO-");
 
         jFTF.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.DateFormatter(java.text.DateFormat.getDateInstance(java.text.DateFormat.SHORT))));
+
+        jRBganho.setText("GANHO +");
+
+        jRBgasto.setText("GASTO -");
+        jRBgasto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jRBgastoActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -186,15 +183,10 @@ public class TelaFinanancas extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(22, 22, 22)
-                                .addComponent(buttonCadastrar, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
-                                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addContainerGap()
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
+                        .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -209,7 +201,17 @@ public class TelaFinanancas extends javax.swing.JFrame {
                             .addComponent(txtNome, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(txtClassificacao, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jFTF, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(48, 48, 48)
+                        .addComponent(buttonCadastrar, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jRBganho)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jRBgasto)
+                        .addGap(29, 29, 29)))
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(buttonMesAtual)
@@ -276,7 +278,11 @@ public class TelaFinanancas extends javax.swing.JFrame {
                             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                 .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGap(74, 74, 74)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(jRBganho)
+                                .addComponent(jRBgasto))
+                            .addGap(41, 41, 41)
                             .addComponent(buttonCadastrar, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -322,7 +328,8 @@ public class TelaFinanancas extends javax.swing.JFrame {
               try {
                   //alterar
                   daoFinancas.deleteFinanca(row);
-                   JOptionPane.showMessageDialog(this, "Alimento removido com sucesso!");
+                  //modificação feita pelo Japa (24/04 15:50 - IFMG)
+                   JOptionPane.showMessageDialog(this, "Item removido com sucesso!");
                     listagemTabela(); // Atualiza a tabela após remoção
                     
               }catch(SQLException ex){
@@ -354,6 +361,10 @@ public class TelaFinanancas extends javax.swing.JFrame {
     private void txtValorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtValorActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtValorActionPerformed
+
+    private void jRBgastoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRBgastoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jRBgastoActionPerformed
 
     /**
      * @param args the command line arguments
@@ -408,6 +419,8 @@ public class TelaFinanancas extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JRadioButton jRBganho;
+    private javax.swing.JRadioButton jRBgasto;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable;
     private javax.swing.JTextField txtClassificacao;
