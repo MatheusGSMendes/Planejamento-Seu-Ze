@@ -4,19 +4,45 @@
  */
 package view;
 
+import DAO.financasDAO;
+import java.sql.Date;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import model.financasModel;
 
-/**
- *
- * @author srten
- */
 public class TelaFinanancas extends javax.swing.JFrame {
 
-    /**
-     * Creates new form TelaFinanancas
-     */
     public TelaFinanancas() {
         initComponents();
+        
+        this.listagemTabela();
+    }
+    
+    
+    
+    financasDAO daoFinancas = new financasDAO();
+    
+      public void listagemTabela() {
+          
+          DefaultTableModel model = (DefaultTableModel) jTable.getModel();
+          model.setRowCount(0); // Limpa a tabela antes de recarregar os dados
+          List<financasModel> financas = daoFinancas.getFinancasTotal();
+          for (financasModel financa : financas) {
+              model.addRow(new Object[]{
+                  //alimento.getId(),
+                  financa.getNome(),
+                  financa.getClassificacao(),
+                  financa.getValor(),
+                  financa.getDataCadastrado(),
+                  financa.getDataRealizado()
+                      
+              });
+          }
+
     }
 
     /**
@@ -44,7 +70,6 @@ public class TelaFinanancas extends javax.swing.JFrame {
         jLabel6 = new javax.swing.JLabel();
         txtValor = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
-        txtEntrada = new javax.swing.JTextField();
         buttonCadastrar = new javax.swing.JButton();
         buttonExcluir = new javax.swing.JButton();
         jLabel8 = new javax.swing.JLabel();
@@ -52,6 +77,7 @@ public class TelaFinanancas extends javax.swing.JFrame {
         jLabel10 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
+        jFTF = new javax.swing.JFormattedTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -151,6 +177,8 @@ public class TelaFinanancas extends javax.swing.JFrame {
         jButton2.setForeground(new java.awt.Color(0, 0, 0));
         jButton2.setText("GASTO-");
 
+        jFTF.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.DateFormatter(java.text.DateFormat.getDateInstance(java.text.DateFormat.SHORT))));
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -165,7 +193,7 @@ public class TelaFinanancas extends javax.swing.JFrame {
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addContainerGap()
                                 .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 34, Short.MAX_VALUE)
                                 .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 86, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(18, 18, 18))
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -176,12 +204,11 @@ public class TelaFinanancas extends javax.swing.JFrame {
                                 .addComponent(jLabel6))
                             .addComponent(jLabel7, javax.swing.GroupLayout.Alignment.TRAILING))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(txtEntrada, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(txtValor, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(txtNome, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(txtClassificacao, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtValor, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtNome, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtClassificacao, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jFTF, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -244,7 +271,7 @@ public class TelaFinanancas extends javax.swing.JFrame {
                             .addGap(33, 33, 33)
                             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                 .addComponent(jLabel7)
-                                .addComponent(txtEntrada, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(jFTF, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGap(58, 58, 58)
                             .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                 .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -287,7 +314,21 @@ public class TelaFinanancas extends javax.swing.JFrame {
 
     private void buttonCadastrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonCadastrarActionPerformed
         
-        DefaultTableModel dados = (DefaultTableModel) jTable.getModel();
+          
+        try {
+            financasModel f = new financasModel();
+            
+            f.setNome(txtNome.getText());
+            f.setClassificacao(txtClassificacao.getText());
+            f.setValor(Double.parseDouble(txtValor.getText()));
+            f.setDataRealizado(Date.valueOf(txtDataInicial.getText()));
+            
+            daoFinancas.setFinancas(f);
+            JOptionPane.showMessageDialog(this, "Informação adicionada com sucesso!");
+            listagemTabela(); // Atualiza a tabela após adicionar
+        } catch (SQLException ex) {
+            Logger.getLogger(TelaFinanancas.class.getName()).log(Level.SEVERE, null, ex);
+        }
         
     }//GEN-LAST:event_buttonCadastrarActionPerformed
 
@@ -336,6 +377,7 @@ public class TelaFinanancas extends javax.swing.JFrame {
     private javax.swing.JButton buttonMesAtual;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JFormattedTextField jFTF;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;
@@ -352,7 +394,6 @@ public class TelaFinanancas extends javax.swing.JFrame {
     private javax.swing.JTextField txtClassificacao;
     private javax.swing.JTextField txtDataFinal;
     private javax.swing.JTextField txtDataInicial;
-    private javax.swing.JTextField txtEntrada;
     private javax.swing.JTextField txtNome;
     private javax.swing.JTextField txtValor;
     // End of variables declaration//GEN-END:variables

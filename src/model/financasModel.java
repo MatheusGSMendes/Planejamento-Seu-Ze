@@ -12,12 +12,17 @@ public class financasModel {
     private Date dataCadastrado;
 
     public financasModel(int idValor, String nome, String classificacao, Date dataRealizado, Date dataCadastrado, Double valor) {
+       
         this.idValor = idValor;
         this.nome = nome;
         this.classificacao = classificacao;
         this.dataRealizado = dataRealizado;
         this.dataCadastrado = dataCadastrado;
         this.valor = valor;
+    }
+
+    public financasModel() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
     
     public int getIdValor() {
@@ -58,6 +63,14 @@ public class financasModel {
 
     public void setDataCadastrado(Date dataCadastrado) {
         this.dataCadastrado = dataCadastrado;
+    }
+
+    public Double getValor() {
+        return valor;
+    }
+
+    public void setValor(Double valor) {
+        this.valor = valor;
     }
     
     @Override

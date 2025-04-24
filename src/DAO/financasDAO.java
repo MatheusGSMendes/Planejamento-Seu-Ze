@@ -1,5 +1,6 @@
 package DAO;
 
+import connectionFactory.Conexao;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -15,25 +16,46 @@ public class financasDAO {
         this.connection = connection;
     }
 
-    
-    public void setFinancas(String nome, double valor, String classificacao, Date datarealizada) throws SQLException{
+    public financasDAO() {
+        this.connection = Conexao.getConnection();
+    }
+
+    public void setFinancas(String nome, double valor, String classificacao, Date datarealizada) throws SQLException {
         String sql = "INSERT INTO seuze(nome, valor, classificacao, datarealizado, datacadastrado)"
                 + "values(?,?,?,?,?)";
         Calendar c = new GregorianCalendar();
-        
-        try(PreparedStatement stmt = connection.prepareStatement(sql)) {
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, nome);
             stmt.setDouble(2, valor);
             stmt.setString(3, classificacao);
             stmt.setDate(4, datarealizada);
             stmt.setDate(5, new java.sql.Date(c.getTime().getTime()));
-            
+
             stmt.execute();
-               
+
         }
-        
+
     }
     
+    public void setFinancas(financasModel f) throws SQLException{
+        String sql = "INSERT INTO seuze(nome, valor, classificacao, datarealizado, datacadastrado)"
+                + "values(?,?,?,?,?)";
+        Calendar c = new GregorianCalendar();
+
+        try(PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, f.getNome());
+            stmt.setDouble(2, f.getValor());
+            stmt.setString(3, f.getClassificacao());
+            stmt.setDate(4, f.getDataRealizado());
+            stmt.setDate(5, new java.sql.Date(c.getTime().getTime()));
+
+            stmt.execute();
+
+        }
+
+    }
+
     //Consegue todos os registros do banco de dados
     public List<financasModel> getFinancasTotal() {
         String sql = "SELECT * FROM seuze";
@@ -112,18 +134,17 @@ public class financasDAO {
 
         return financas;
     }
-    
+
     //deleta linha da tabela com base no id do registro
-    public void deleteFinanca(int id) throws SQLException{
+    public void deleteFinanca(int id) throws SQLException {
         String sql = "DELETE FROM seuze WHERE idvalor = ?";
-        
+
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, id);
-            
+
             stmt.execute();
         }
-        
-        
+
     }
 
 }
