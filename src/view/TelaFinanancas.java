@@ -15,6 +15,7 @@ import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import model.financasModel;
+import controller.ControladorFinancas;
 
 public class TelaFinanancas extends javax.swing.JFrame {
 
@@ -26,6 +27,25 @@ public class TelaFinanancas extends javax.swing.JFrame {
 
     financasDAO daoFinancas = new financasDAO();
 
+    public void listagemTabela(List<financasModel> financas) {
+
+        DefaultTableModel model = (DefaultTableModel) jTable.getModel();
+        model.setRowCount(0); // Limpa a tabela antes de recarregar os dados
+        //List<financasModel> financas = daoFinancas.getFinancasTotal();
+        for (financasModel financa : financas) {
+            model.addRow(new Object[]{
+                financa.getNome(),
+                financa.getClassificacao(),
+                financa.getValor(),
+                financa.getDataCadastrado(),
+                financa.getDataRealizado()
+
+            });
+        }
+
+    }
+    
+    //Sobrescrita
     public void listagemTabela() {
 
         DefaultTableModel model = (DefaultTableModel) jTable.getModel();
@@ -329,7 +349,14 @@ public class TelaFinanancas extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void buttonMesAtualActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonMesAtualActionPerformed
-        // TODO add your handling code here:
+        financasDAO dao = new financasDAO();
+        try {
+            List<financasModel> lista = dao.getFinancasMesAtual();
+            listagemTabela(lista);
+        } catch (SQLException ex) {
+            Logger.getLogger(TelaFinanancas.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
     }//GEN-LAST:event_buttonMesAtualActionPerformed
 
     private void buttonExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonExcluirActionPerformed
@@ -341,12 +368,17 @@ public class TelaFinanancas extends javax.swing.JFrame {
 
         // Pegando o ID da primeira coluna da tabela (certifique-se que seja mesmo o ID)
         //int id = Integer.parseInt(jTable.getModel().getValueAt(row, 0).toString());
-        String nome = jTable.getModel().getValueAt(row, 0).toString();
+        //String nome = jTable.getModel().getValueAt(row, 0).toString();
         int confirm = JOptionPane.showConfirmDialog(this, "Tem certeza que deseja deletar essa informação?", "Confirmar", JOptionPane.YES_NO_OPTION);
 
         if (confirm == JOptionPane.YES_OPTION) {
-            
-            try {
+
+            ControladorFinancas c = new ControladorFinancas();
+
+           // financasModel selecionado = listaFinancas.get(row);
+            //controladorFinancas.excluirFinanca(selecionado);
+
+            /*try {
                 //alterar
                 //daoFinancas.deleteFinanca(id);
                 daoFinancas.deleteFinanca(row);
@@ -355,7 +387,7 @@ public class TelaFinanancas extends javax.swing.JFrame {
 
             } catch (SQLException ex) {
                 JOptionPane.showMessageDialog(this, "Erro ao deletar: " + ex.getMessage());
-            }
+            }*/
         }
     }//GEN-LAST:event_buttonExcluirActionPerformed
 
