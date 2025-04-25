@@ -142,8 +142,11 @@ public class financasDAO {
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, id);
+            int rowsDeleted = stmt.executeUpdate();
+            
+            
 
-            stmt.execute();
+            //stmt.execute();
         }
 
     }
