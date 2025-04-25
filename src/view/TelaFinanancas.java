@@ -96,8 +96,9 @@ public class TelaFinanancas extends javax.swing.JFrame {
         jButton2 = new javax.swing.JButton();
         jFTFdataentrada = new javax.swing.JFormattedTextField();
         txtDataInicial = new javax.swing.JFormattedTextField();
-        jFormattedTextField2 = new javax.swing.JFormattedTextField();
+        txtDataFinal = new javax.swing.JFormattedTextField();
         jBvoltar = new javax.swing.JButton();
+        buttonFiltrar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -208,12 +209,22 @@ public class TelaFinanancas extends javax.swing.JFrame {
             }
         });
 
-        jFormattedTextField2.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.DateFormatter(java.text.DateFormat.getDateInstance(java.text.DateFormat.SHORT))));
+        txtDataFinal.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.DateFormatter(java.text.DateFormat.getDateInstance(java.text.DateFormat.SHORT))));
 
         jBvoltar.setText("Refazer");
         jBvoltar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jBvoltarActionPerformed(evt);
+            }
+        });
+
+        buttonFiltrar.setBackground(new java.awt.Color(0, 0, 153));
+        buttonFiltrar.setFont(new java.awt.Font("Segoe UI Black", 0, 12)); // NOI18N
+        buttonFiltrar.setForeground(new java.awt.Color(255, 255, 255));
+        buttonFiltrar.setText("FILTRAR");
+        buttonFiltrar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonFiltrarActionPerformed(evt);
             }
         });
 
@@ -251,6 +262,12 @@ public class TelaFinanancas extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 50, Short.MAX_VALUE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(buttonExcluir, javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jBvoltar, javax.swing.GroupLayout.Alignment.TRAILING)))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(buttonMesAtual)
                         .addGap(45, 45, 45)
                         .addComponent(jLabel3)
@@ -259,12 +276,10 @@ public class TelaFinanancas extends javax.swing.JFrame {
                         .addGap(52, 52, 52)
                         .addComponent(jLabel4)
                         .addGap(18, 18, 18)
-                        .addComponent(jFormattedTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 50, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(buttonExcluir, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jBvoltar, javax.swing.GroupLayout.Alignment.TRAILING))
+                        .addComponent(txtDataFinal, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(32, 32, 32)
+                        .addComponent(buttonFiltrar)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(197, 197, 197)
@@ -290,8 +305,9 @@ public class TelaFinanancas extends javax.swing.JFrame {
                             .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jLabel4)
                             .addComponent(txtDataInicial, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jFormattedTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(16, 16, 16))
+                            .addComponent(txtDataFinal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(buttonFiltrar))
+                        .addGap(15, 15, 15))
                     .addComponent(buttonMesAtual))
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -319,7 +335,7 @@ public class TelaFinanancas extends javax.swing.JFrame {
                             .addComponent(buttonCadastrar, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(173, 173, 173)
+                        .addGap(167, 167, 167)
                         .addComponent(buttonExcluir)
                         .addGap(51, 51, 51)
                         .addComponent(jBvoltar)))
@@ -336,7 +352,7 @@ public class TelaFinanancas extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addGap(0, 6, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -349,13 +365,30 @@ public class TelaFinanancas extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void buttonMesAtualActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonMesAtualActionPerformed
-        financasDAO dao = new financasDAO();
-        try {
-            List<financasModel> lista = dao.getFinancasMesAtual();
-            listagemTabela(lista);
-        } catch (SQLException ex) {
-            Logger.getLogger(TelaFinanancas.class.getName()).log(Level.SEVERE, null, ex);
+
+           try {
+            // Primeiro, você pega as datas dos JTextFields
+            String dataInicialStr = txtDataInicial.getText();
+            String dataFinalStr = txtDataFinal.getText();
+            
+            // Converte para java.sql.Date
+            SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd"); // ajuste o formato se necessário
+            java.util.Date dataInicialUtil = formato.parse(dataInicialStr);
+            java.util.Date dataFinalUtil = formato.parse(dataFinalStr);
+            java.sql.Date dataInicial = new java.sql.Date(dataInicialUtil.getTime());
+            java.sql.Date dataFinal = new java.sql.Date(dataFinalUtil.getTime());
+
+            // Agora chama o DAO para pegar os registros filtrados
+            financasDAO dao = new financasDAO(); // Certifique-se de que seu DAO esteja criado corretamente
+            List<financasModel> financasFiltradas = dao.getFinancasTimeStamp(dataInicial, dataFinal);
+
+            // Atualiza a tabela usando o método listagemTabela
+            listagemTabela(financasFiltradas);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Erro ao filtrar dados: " + ex.getMessage());
         }
+    
 
     }//GEN-LAST:event_buttonMesAtualActionPerformed
 
@@ -444,6 +477,25 @@ public class TelaFinanancas extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void buttonFiltrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonFiltrarActionPerformed
+        //MUDAR 
+        String dataInicialStr = txtDataInicial.getText();
+        String dataFinalStr = txtDataFinal.getText();
+        
+        SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd"); 
+        java.util.Date dataInicialUtil = formato.parse(dataInicialStr);
+        java.util.Date dataFinalUtil = formato.parse(dataFinalStr);
+        java.sql.Date dataInicial = new java.sql.Date(dataInicialUtil.getTime());
+        java.sql.Date dataFinal = new java.sql.Date(dataFinalUtil.getTime());
+        
+        financasDAO daoF = new financasDAO(); 
+        
+        List<financasModel> financasFiltradas = daoF.getFinancasTimeStamp(dataInicial, dataFinal);
+        
+        listagemTabela(financasFiltradas);
+
+    }//GEN-LAST:event_buttonFiltrarActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -482,12 +534,12 @@ public class TelaFinanancas extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton buttonCadastrar;
     private javax.swing.JButton buttonExcluir;
+    private javax.swing.JButton buttonFiltrar;
     private javax.swing.JButton buttonMesAtual;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jBvoltar;
     private javax.swing.JFormattedTextField jFTFdataentrada;
-    private javax.swing.JFormattedTextField jFormattedTextField2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;
@@ -502,6 +554,7 @@ public class TelaFinanancas extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable;
     private javax.swing.JTextField txtClassificacao;
+    private javax.swing.JFormattedTextField txtDataFinal;
     private javax.swing.JFormattedTextField txtDataInicial;
     private javax.swing.JTextField txtNome;
     private javax.swing.JTextField txtValor;
