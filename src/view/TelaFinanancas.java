@@ -15,72 +15,109 @@ import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import model.financasModel;
-import controller.ControladorFinancas;
 
 public class TelaFinanancas extends javax.swing.JFrame {
 
     public TelaFinanancas() {
-        
-        this.listagemTabela();
+
         initComponents();
+        escondeSoma();
+        this.listagemTabela();
     }
 
-    private financasDAO daoFinancas = new financasDAO();
-    private int opcao = 1;
-    private double recebidos = 0;
-    private double gastos = 0;
-    private double diferenca = 0;
+    private financasDAO daoFinancas = new financasDAO();//Objeto utilizado para acessar os metodos da classe financasDAO
+    private int opcao = 1;//É utilizado para definir se o registro foi um gasto ou um ganho
+    private double recebidos = 0;//A soma dos registros em que o usuário RECEBEU dinheiro
+    private double gastos = 0;//A soma dos registros em que o usuário GASTOU dinheiro
+    private double diferenca = 0;//A DIFERENCA entre o dinheiro gasto e recebido
 
-    
     //sobrescrita: exibe na tabela uma lista fornecida
     public void listagemTabela(List<financasModel> financas) {
+        try {
+            apagaRegistros();
+            DefaultTableModel model = (DefaultTableModel) jTBRegistros.getModel();
+            model.setRowCount(0); // Limpa a tabela antes de recarregar os dados
 
-        DefaultTableModel model = (DefaultTableModel) jTBRegistros.getModel();
-        model.setRowCount(0); // Limpa a tabela antes de recarregar os dados
+            escondeID();
+            if(!financas.isEmpty()){
+            for (financasModel financa : financas) {
+                model.addRow(new Object[]{
+                    financa.getNome(),
+                    financa.getClassificacao(),
+                    financa.getValor(),
+                    financa.getDataRealizado(),
+                    financa.getDataCadastrado(),
+                    financa.getIdValor()
 
-        escondeID();
+                });
+                somaDosRegistros(financa.getValor());
+            }
 
-        for (financasModel financa : financas) {
-            model.addRow(new Object[]{
-                financa.getNome(),
-                financa.getClassificacao(),
-                financa.getValor(),
-                financa.getDataRealizado(),
-                financa.getDataCadastrado(),
-                financa.getIdValor()
-            });
+            exibeSoma();
+            }else{
+                escondeSoma();
+            }
+        } catch (NullPointerException ex) {
+            JOptionPane.showMessageDialog(null, "Nenhum registro encontrado");
+            escondeSoma();
         }
 
     }
 
     //Exibe na tabela todos os registros do banco de dados
     public void listagemTabela() {
+        try {
+            apagaRegistros();
+            DefaultTableModel model = (DefaultTableModel) jTBRegistros.getModel();
+            model.setRowCount(0); // Limpa a tabela antes de recarregar os dados
 
-        DefaultTableModel model = (DefaultTableModel) jTBRegistros.getModel();
-        model.setRowCount(0); // Limpa a tabela antes de recarregar os dados
+            escondeID();
 
-        escondeID();
+            List<financasModel> financas = daoFinancas.getFinancasTotal();
+            if(!financas.isEmpty()){
+            for (financasModel financa : financas) {
+                model.addRow(new Object[]{
+                    financa.getNome(),
+                    financa.getClassificacao(),
+                    financa.getValor(),
+                    financa.getDataRealizado(),
+                    financa.getDataCadastrado(),
+                    financa.getIdValor()
+                });
+                somaDosRegistros(financa.getValor());
+            }
 
-        List<financasModel> financas = daoFinancas.getFinancasTotal();
-        for (financasModel financa : financas) {
-            model.addRow(new Object[]{
-                financa.getNome(),
-                financa.getClassificacao(),
-                financa.getValor(),
-                financa.getDataRealizado(),
-                financa.getDataCadastrado(),
-                financa.getIdValor()
-            });
-            somaDosRegistros(financa.getValor());
-        }
-
-        //if (jTBRegistros.getValueAt(0, 0) != null) {
+            exibeSoma();
+            }else{
+                escondeSoma();
+            }
             
-        //}
+        } catch (NullPointerException ex) {
+            JOptionPane.showMessageDialog(null, "Nenhum registro encontrado");
+            escondeSoma();
+        }
 
     }
 
-    public void somaDosRegistros(double valor) {
+    //Mostra os labels da soma dos registros recebidos, gastos e da diferenca
+    private void exibeSoma() {
+        jLRecebidos.setText("Recebido: " + recebidos);
+        jLRecebidos.setVisible(true);
+        jLGastos.setText("Gastos: " + gastos);
+        jLGastos.setVisible(true);
+        jLDiferenca.setText("Diferenca: " + diferenca);
+        jLDiferenca.setVisible(true);
+    }
+
+    //Esconde os labels da soma dos registros recebidos, gastos e da diferenca
+    private void escondeSoma() {
+        jLRecebidos.setVisible(false);
+        jLGastos.setVisible(false);
+        jLDiferenca.setVisible(false);
+    }
+
+    //Faz a soma dos registros para exibir para o usuario
+    private void somaDosRegistros(double valor) {
         if (valor > 0) {
             recebidos += valor;
         } else {
@@ -90,8 +127,15 @@ public class TelaFinanancas extends javax.swing.JFrame {
         diferenca += valor;
     }
 
+    //Torna os valores da soma dos registros recebidos, gastos e da diferenca
+    private void apagaRegistros() {
+        this.recebidos = 0;
+        this.gastos = 0;
+        this.diferenca = 0;
+    }
+
     //esconde a coluna do atributo valorID na tabela, que será usado porém não é necessário que o cliente veja
-    public void escondeID() {
+    private void escondeID() {
         jTBRegistros.getColumnModel().getColumn(5).setMinWidth(0);
         jTBRegistros.getColumnModel().getColumn(5).setMaxWidth(0);
     }
@@ -220,13 +264,10 @@ public class TelaFinanancas extends javax.swing.JFrame {
         });
 
         jLRecebidos.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLRecebidos.setText("Recebidos:");
 
         jLGastos.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLGastos.setText("Gastos: ");
 
         jLDiferenca.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLDiferenca.setText("Diferença:");
 
         jButton1.setBackground(new java.awt.Color(51, 255, 51));
         jButton1.setText("GANHO+");
@@ -426,6 +467,7 @@ public class TelaFinanancas extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    //exibe os registros do mes atual na tabela
     private void buttonMesAtualActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonMesAtualActionPerformed
         try {
             financasDAO f = new financasDAO();
@@ -438,6 +480,7 @@ public class TelaFinanancas extends javax.swing.JFrame {
 
     }//GEN-LAST:event_buttonMesAtualActionPerformed
 
+    //Exclui um registro da tabela
     private void buttonExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonExcluirActionPerformed
         int row = jTBRegistros.getSelectedRow();
         //caso não haja um registro selecionado, exibe uma mensagem
@@ -463,7 +506,7 @@ public class TelaFinanancas extends javax.swing.JFrame {
 
     }//GEN-LAST:event_buttonExcluirActionPerformed
 
-
+    //Botão para cadastrar um novo registro na tabela
     private void buttonCadastrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonCadastrarActionPerformed
         SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
         java.util.Date data = null;
@@ -496,6 +539,7 @@ public class TelaFinanancas extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtDataInicialActionPerformed
 
+    //Botão para retornar o ultimo registro apagado para a tabela
     private void jBvoltarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBvoltarActionPerformed
         try {
             daoFinancas.refazerExclusao();
@@ -514,6 +558,7 @@ public class TelaFinanancas extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jFTFdataentradaActionPerformed
 
+    //define opcao como 1
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
         opcao = 1;

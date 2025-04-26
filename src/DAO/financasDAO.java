@@ -19,7 +19,8 @@ public class financasDAO {
     public financasDAO() {
         this.connection = Conexao.getConnection();
     }
-
+    
+    //insere um novo registro na tabela com base nos atributos do objeto
     public void setFinancas(String nome, double valor, String classificacao, Date datarealizada) throws SQLException {
         String sql = "INSERT INTO seuze(nome, valor, classificacao, datarealizado, datacadastrado)"
                 + "values(?,?,?,?,?)";
@@ -38,6 +39,7 @@ public class financasDAO {
 
     }
 
+    //insere um novo registro na tabela com base em um objeto
     public void setFinancas(financasModel f) throws SQLException {
         String sql = "INSERT INTO seuze(nome, valor, classificacao, datarealizado, datacadastrado)"
                 + "values(?,?,?,?,?)";
@@ -192,7 +194,10 @@ public class financasDAO {
 
     }
 
+    //Retorna o ultimo registro excluido para a tabela principal novamente
     public void refazerExclusao() throws SQLException {
+        
+        //Retorna o ultimo registro excluido
         String sql = "SELECT * FROM refazerexclusao ORDER BY ordemdeadicao DESC LIMIT 1";
         financasModel f = new financasModel();
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
@@ -208,6 +213,7 @@ public class financasDAO {
 
         }
 
+        //insere o registro novamente na tabela
         sql = "INSERT INTO seuze (nome, classificacao, dataRealizado, dataCadastrado, valor, idValor)"
                 + "VALUES (?,?,?,?,?,?);"
                 + "DELETE FROM refazerexclusao WHERE idValor = ?";
