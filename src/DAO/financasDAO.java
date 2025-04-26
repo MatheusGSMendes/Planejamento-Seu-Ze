@@ -150,5 +150,33 @@ public class financasDAO {
         }
 
     }
+    
+    public void refazerExclusao() throws SQLException{
+        String sql = "SELECT * FROM refazerexclusao ORDER BY 1 LIMIT 1";
+        financasModel f = new financasModel();
+        try(PreparedStatement stmt = connection.prepareStatement(sql)){
+            ResultSet rs = stmt.executeQuery();
+            while(rs.next()){
+                f.setIdValor(rs.getInt("idValor"));
+                f.setNome(rs.getString("nome"));
+                f.setClassificacao(rs.getString("classificacao"));
+                f.setDataRealizado(rs.getDate("dataRealizado"));
+                f.setDataCadastrado(rs.getDate("dataCadastrado"));
+                f.setValor(rs.getDouble("valor"));
+            }
+            
+        }
+        
+        sql = "INSERT INTO seuze (nome, classificacao, dataRealizado, dataCadastrado, valor, idValor)"
+                + "VALUES (?,?,?,?,?,?);"
+                + "DELETE FROM refazerexclusao WHERE idValor = ?";
+        
+        try(PreparedStatement stmt = connection.prepareStatement(sql)){
+            stmt.setInt(1,f.getIdValor());
+            stmt.execute();
+        }
+        
+    }
+    
 
 }

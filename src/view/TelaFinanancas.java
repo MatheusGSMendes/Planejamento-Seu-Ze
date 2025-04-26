@@ -19,14 +19,17 @@ import controller.ControladorFinancas;
 
 public class TelaFinanancas extends javax.swing.JFrame {
 
+    
+    
     public TelaFinanancas() {
         initComponents();
 
         this.listagemTabela();
     }
 
-    financasDAO daoFinancas = new financasDAO();
-
+    private financasDAO daoFinancas = new financasDAO();
+    private int opcao=1;
+    
     public void listagemTabela(List<financasModel> financas) {
 
         DefaultTableModel model = (DefaultTableModel) jTable.getModel();
@@ -44,7 +47,7 @@ public class TelaFinanancas extends javax.swing.JFrame {
         }
 
     }
-    
+
     //Sobrescrita
     public void listagemTabela() {
 
@@ -194,22 +197,44 @@ public class TelaFinanancas extends javax.swing.JFrame {
 
         jButton2.setBackground(new java.awt.Color(255, 51, 51));
         jButton2.setText("GASTO-");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
-        jFTFdataentrada.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.DateFormatter(java.text.DateFormat.getDateInstance(java.text.DateFormat.SHORT))));
+        try {
+            jFTFdataentrada.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.MaskFormatter("##/##/####")));
+        } catch (java.text.ParseException ex) {
+            ex.printStackTrace();
+        }
         jFTFdataentrada.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jFTFdataentradaActionPerformed(evt);
             }
         });
 
-        txtDataInicial.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.DateFormatter(java.text.DateFormat.getDateInstance(java.text.DateFormat.SHORT))));
+        try {
+            txtDataInicial.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.MaskFormatter("##/##/####")));
+        } catch (java.text.ParseException ex) {
+            ex.printStackTrace();
+        }
         txtDataInicial.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtDataInicialActionPerformed(evt);
             }
         });
 
-        txtDataFinal.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.DateFormatter(java.text.DateFormat.getDateInstance(java.text.DateFormat.SHORT))));
+        try {
+            txtDataFinal.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.MaskFormatter("##/##/####")));
+        } catch (java.text.ParseException ex) {
+            ex.printStackTrace();
+        }
+        txtDataFinal.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtDataFinalActionPerformed(evt);
+            }
+        });
 
         jBvoltar.setText("Refazer");
         jBvoltar.addActionListener(new java.awt.event.ActionListener() {
@@ -278,8 +303,7 @@ public class TelaFinanancas extends javax.swing.JFrame {
                         .addGap(18, 18, 18)
                         .addComponent(txtDataFinal, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(32, 32, 32)
-                        .addComponent(buttonFiltrar)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addComponent(buttonFiltrar)))
                 .addContainerGap())
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(197, 197, 197)
@@ -352,7 +376,7 @@ public class TelaFinanancas extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 6, Short.MAX_VALUE))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -365,30 +389,14 @@ public class TelaFinanancas extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void buttonMesAtualActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonMesAtualActionPerformed
-
-           try {
-            // Primeiro, você pega as datas dos JTextFields
-            String dataInicialStr = txtDataInicial.getText();
-            String dataFinalStr = txtDataFinal.getText();
+        try {
+            financasDAO f = new financasDAO();
             
-            // Converte para java.sql.Date
-            SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd"); // ajuste o formato se necessário
-            java.util.Date dataInicialUtil = formato.parse(dataInicialStr);
-            java.util.Date dataFinalUtil = formato.parse(dataFinalStr);
-            java.sql.Date dataInicial = new java.sql.Date(dataInicialUtil.getTime());
-            java.sql.Date dataFinal = new java.sql.Date(dataFinalUtil.getTime());
-
-            // Agora chama o DAO para pegar os registros filtrados
-            financasDAO dao = new financasDAO(); // Certifique-se de que seu DAO esteja criado corretamente
-            List<financasModel> financasFiltradas = dao.getFinancasTimeStamp(dataInicial, dataFinal);
-
-            // Atualiza a tabela usando o método listagemTabela
-            listagemTabela(financasFiltradas);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            JOptionPane.showMessageDialog(null, "Erro ao filtrar dados: " + ex.getMessage());
+            listagemTabela(f.getFinancasMesAtual());
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(TelaFinanancas.class.getName()).log(Level.SEVERE, null, ex);
         }
-    
 
     }//GEN-LAST:event_buttonMesAtualActionPerformed
 
@@ -408,7 +416,7 @@ public class TelaFinanancas extends javax.swing.JFrame {
 
             ControladorFinancas c = new ControladorFinancas();
 
-           // financasModel selecionado = listaFinancas.get(row);
+            // financasModel selecionado = listaFinancas.get(row);
             //controladorFinancas.excluirFinanca(selecionado);
 
             /*try {
@@ -440,7 +448,7 @@ public class TelaFinanancas extends javax.swing.JFrame {
 
             f.setNome(txtNome.getText());
             f.setClassificacao(txtClassificacao.getText());
-            f.setValor(Double.parseDouble(txtValor.getText()));
+            f.setValor((Double.parseDouble(txtValor.getText()))*opcao);
             f.setDataRealizado(dataSQL);
 
             daoFinancas.setFinancas(f);
@@ -462,7 +470,13 @@ public class TelaFinanancas extends javax.swing.JFrame {
     }//GEN-LAST:event_txtDataInicialActionPerformed
 
     private void jBvoltarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBvoltarActionPerformed
-        // TODO add your handling code here:
+        try {
+            daoFinancas.refazerExclusao();
+            
+            // TODO add your handling code here:
+        } catch (SQLException ex) {
+            Logger.getLogger(TelaFinanancas.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }//GEN-LAST:event_jBvoltarActionPerformed
 
     private void txtNomeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNomeActionPerformed
@@ -475,26 +489,42 @@ public class TelaFinanancas extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
+        opcao = 1;
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void buttonFiltrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonFiltrarActionPerformed
-        //MUDAR 
-        String dataInicialStr = txtDataInicial.getText();
-        String dataFinalStr = txtDataFinal.getText();
-        
-        SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd"); 
-        java.util.Date dataInicialUtil = formato.parse(dataInicialStr);
-        java.util.Date dataFinalUtil = formato.parse(dataFinalStr);
-        java.sql.Date dataInicial = new java.sql.Date(dataInicialUtil.getTime());
-        java.sql.Date dataFinal = new java.sql.Date(dataFinalUtil.getTime());
-        
-        financasDAO daoF = new financasDAO(); 
-        
-        List<financasModel> financasFiltradas = daoF.getFinancasTimeStamp(dataInicial, dataFinal);
-        
-        listagemTabela(financasFiltradas);
+        try {
+            // Primeiro, você pega as datas dos JTextFields
+            String dataInicialStr = txtDataInicial.getText();
+            String dataFinalStr = txtDataFinal.getText();
 
+            // Converte para java.sql.Date
+            SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy"); // ajuste o formato se necessário
+            java.util.Date dataInicialUtil = formato.parse(dataInicialStr);
+            java.util.Date dataFinalUtil = formato.parse(dataFinalStr);
+            java.sql.Date dataInicial = new java.sql.Date(dataInicialUtil.getTime());
+            java.sql.Date dataFinal = new java.sql.Date(dataFinalUtil.getTime());
+
+            // Agora chama o DAO para pegar os registros filtrados
+            financasDAO dao = new financasDAO(); // Certifique-se de que seu DAO esteja criado corretamente
+            List<financasModel> financasFiltradas = dao.getFinancasTimeStamp(dataInicial, dataFinal);
+
+            // Atualiza a tabela usando o método listagemTabela
+            listagemTabela(financasFiltradas);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Erro ao filtrar dados: " + ex.getMessage());
+        }
     }//GEN-LAST:event_buttonFiltrarActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        opcao = -1;
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void txtDataFinalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtDataFinalActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtDataFinalActionPerformed
 
     /**
      * @param args the command line arguments
