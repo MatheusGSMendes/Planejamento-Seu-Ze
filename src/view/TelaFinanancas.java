@@ -19,52 +19,81 @@ import controller.ControladorFinancas;
 
 public class TelaFinanancas extends javax.swing.JFrame {
 
-    
-    
     public TelaFinanancas() {
-        initComponents();
-
+        
         this.listagemTabela();
+        initComponents();
     }
 
     private financasDAO daoFinancas = new financasDAO();
-    private int opcao=1;
+    private int opcao = 1;
+    private double recebidos = 0;
+    private double gastos = 0;
+    private double diferenca = 0;
+
     
+    //sobrescrita: exibe na tabela uma lista fornecida
     public void listagemTabela(List<financasModel> financas) {
 
-        DefaultTableModel model = (DefaultTableModel) jTable.getModel();
+        DefaultTableModel model = (DefaultTableModel) jTBRegistros.getModel();
         model.setRowCount(0); // Limpa a tabela antes de recarregar os dados
-        //List<financasModel> financas = daoFinancas.getFinancasTotal();
+
+        escondeID();
+
         for (financasModel financa : financas) {
             model.addRow(new Object[]{
                 financa.getNome(),
                 financa.getClassificacao(),
                 financa.getValor(),
+                financa.getDataRealizado(),
                 financa.getDataCadastrado(),
-                financa.getDataRealizado()
-
+                financa.getIdValor()
             });
         }
 
     }
 
-    //Sobrescrita
+    //Exibe na tabela todos os registros do banco de dados
     public void listagemTabela() {
 
-        DefaultTableModel model = (DefaultTableModel) jTable.getModel();
+        DefaultTableModel model = (DefaultTableModel) jTBRegistros.getModel();
         model.setRowCount(0); // Limpa a tabela antes de recarregar os dados
+
+        escondeID();
+
         List<financasModel> financas = daoFinancas.getFinancasTotal();
         for (financasModel financa : financas) {
             model.addRow(new Object[]{
                 financa.getNome(),
                 financa.getClassificacao(),
                 financa.getValor(),
+                financa.getDataRealizado(),
                 financa.getDataCadastrado(),
-                financa.getDataRealizado()
-
+                financa.getIdValor()
             });
+            somaDosRegistros(financa.getValor());
         }
 
+        //if (jTBRegistros.getValueAt(0, 0) != null) {
+            
+        //}
+
+    }
+
+    public void somaDosRegistros(double valor) {
+        if (valor > 0) {
+            recebidos += valor;
+        } else {
+            gastos += Math.abs(valor);
+        }
+
+        diferenca += valor;
+    }
+
+    //esconde a coluna do atributo valorID na tabela, que será usado porém não é necessário que o cliente veja
+    public void escondeID() {
+        jTBRegistros.getColumnModel().getColumn(5).setMinWidth(0);
+        jTBRegistros.getColumnModel().getColumn(5).setMaxWidth(0);
     }
 
     /**
@@ -81,7 +110,7 @@ public class TelaFinanancas extends javax.swing.JFrame {
         jLabel2 = new javax.swing.JLabel();
         txtNome = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable = new javax.swing.JTable();
+        jTBRegistros = new javax.swing.JTable();
         jLabel3 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
@@ -92,9 +121,9 @@ public class TelaFinanancas extends javax.swing.JFrame {
         jLabel7 = new javax.swing.JLabel();
         buttonCadastrar = new javax.swing.JButton();
         buttonExcluir = new javax.swing.JButton();
-        jLabel8 = new javax.swing.JLabel();
-        jLabel9 = new javax.swing.JLabel();
-        jLabel10 = new javax.swing.JLabel();
+        jLRecebidos = new javax.swing.JLabel();
+        jLGastos = new javax.swing.JLabel();
+        jLDiferenca = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
         jFTFdataentrada = new javax.swing.JFormattedTextField();
@@ -120,18 +149,30 @@ public class TelaFinanancas extends javax.swing.JFrame {
             }
         });
 
-        jTable.setModel(new javax.swing.table.DefaultTableModel(
+        jTBRegistros.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null},
+                {null, null, null, null, null, null}
             },
             new String [] {
-                "Nome", "Classificação", "Valor", "Data", "Cadastro"
+                "Nome", "Classificação", "Valor", "Data", "Cadastro", "idValor"
             }
-        ));
-        jScrollPane1.setViewportView(jTable);
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane1.setViewportView(jTBRegistros);
+        if (jTBRegistros.getColumnModel().getColumnCount() > 0) {
+            jTBRegistros.getColumnModel().getColumn(5).setResizable(false);
+            jTBRegistros.getColumnModel().getColumn(5).setPreferredWidth(0);
+        }
 
         jLabel3.setBackground(new java.awt.Color(0, 0, 0));
         jLabel3.setFont(new java.awt.Font("Segoe UI", 2, 14)); // NOI18N
@@ -178,14 +219,14 @@ public class TelaFinanancas extends javax.swing.JFrame {
             }
         });
 
-        jLabel8.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel8.setText("Recebidos:");
+        jLRecebidos.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLRecebidos.setText("Recebidos:");
 
-        jLabel9.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel9.setText("Gastos: ");
+        jLGastos.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLGastos.setText("Gastos: ");
 
-        jLabel10.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jLabel10.setText("Diferença:");
+        jLDiferenca.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
+        jLDiferenca.setText("Diferença:");
 
         jButton1.setBackground(new java.awt.Color(51, 255, 51));
         jButton1.setText("GANHO+");
@@ -257,6 +298,10 @@ public class TelaFinanancas extends javax.swing.JFrame {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jLabel2)
+                .addGap(216, 216, 216))
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -284,14 +329,15 @@ public class TelaFinanancas extends javax.swing.JFrame {
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addGap(53, 53, 53)
                                 .addComponent(buttonCadastrar, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 46, Short.MAX_VALUE)))
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 50, Short.MAX_VALUE)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(buttonExcluir, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jBvoltar, javax.swing.GroupLayout.Alignment.TRAILING)))
+                        .addComponent(jLRecebidos, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLGastos, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(jLDiferenca, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(buttonMesAtual)
                         .addGap(45, 45, 45)
@@ -301,22 +347,13 @@ public class TelaFinanancas extends javax.swing.JFrame {
                         .addGap(52, 52, 52)
                         .addComponent(jLabel4)
                         .addGap(18, 18, 18)
-                        .addComponent(txtDataFinal, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(32, 32, 32)
-                        .addComponent(buttonFiltrar)))
-                .addContainerGap())
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(197, 197, 197)
-                .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtDataFinal, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel9, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 148, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel2)
-                .addGap(216, 216, 216))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(buttonFiltrar)
+                    .addComponent(buttonExcluir)
+                    .addComponent(jBvoltar))
+                .addContainerGap(41, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -359,15 +396,16 @@ public class TelaFinanancas extends javax.swing.JFrame {
                             .addComponent(buttonCadastrar, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(167, 167, 167)
+                        .addGap(166, 166, 166)
                         .addComponent(buttonExcluir)
-                        .addGap(51, 51, 51)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jBvoltar)))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel9)
-                    .addComponent(jLabel10)))
+                    .addComponent(jLDiferenca)
+                    .addComponent(jLGastos)
+                    .addComponent(jLRecebidos, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -382,7 +420,7 @@ public class TelaFinanancas extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 67, Short.MAX_VALUE))
+                .addGap(0, 61, Short.MAX_VALUE))
         );
 
         pack();
@@ -391,9 +429,9 @@ public class TelaFinanancas extends javax.swing.JFrame {
     private void buttonMesAtualActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonMesAtualActionPerformed
         try {
             financasDAO f = new financasDAO();
-            
+
             listagemTabela(f.getFinancasMesAtual());
-            
+
         } catch (SQLException ex) {
             Logger.getLogger(TelaFinanancas.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -401,61 +439,50 @@ public class TelaFinanancas extends javax.swing.JFrame {
     }//GEN-LAST:event_buttonMesAtualActionPerformed
 
     private void buttonExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonExcluirActionPerformed
-        int row = jTable.getSelectedRow();
+        int row = jTBRegistros.getSelectedRow();
+        //caso não haja um registro selecionado, exibe uma mensagem
         if (row == -1) {
-            JOptionPane.showMessageDialog(this, "Selecione uma informaçaõ para deletar!");
+            JOptionPane.showMessageDialog(this, "Selecione uma informação para deletar!");
             return;
         }
 
-        // Pegando o ID da primeira coluna da tabela (certifique-se que seja mesmo o ID)
-        //int id = Integer.parseInt(jTable.getModel().getValueAt(row, 0).toString());
-        //String nome = jTable.getModel().getValueAt(row, 0).toString();
+        //pede confirmação do usuário para excluir o registro selecionado
         int confirm = JOptionPane.showConfirmDialog(this, "Tem certeza que deseja deletar essa informação?", "Confirmar", JOptionPane.YES_NO_OPTION);
 
         if (confirm == JOptionPane.YES_OPTION) {
 
-            ControladorFinancas c = new ControladorFinancas();
-
-            // financasModel selecionado = listaFinancas.get(row);
-            //controladorFinancas.excluirFinanca(selecionado);
-
-            /*try {
-                //alterar
-                //daoFinancas.deleteFinanca(id);
-                daoFinancas.deleteFinanca(row);
-                JOptionPane.showMessageDialog(this, "Item removido com sucesso!");
-                listagemTabela(); // Atualiza a tabela após remoção
-
+            try {
+                daoFinancas.deleteFinanca((int) jTBRegistros.getValueAt(row, 5));
             } catch (SQLException ex) {
-                JOptionPane.showMessageDialog(this, "Erro ao deletar: " + ex.getMessage());
-            }*/
+                Logger.getLogger(TelaFinanancas.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            listagemTabela();
+
         }
+
     }//GEN-LAST:event_buttonExcluirActionPerformed
+
 
     private void buttonCadastrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonCadastrarActionPerformed
         SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
         java.util.Date data = null;
 
         try {
-            try {
-                data = formato.parse(jFTFdataentrada.getText());
-            } catch (ParseException ex) {
-                Logger.getLogger(TelaFinanancas.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            Date dataSQL = new Date(data.getTime());
-
             financasModel f = new financasModel();
 
             f.setNome(txtNome.getText());
             f.setClassificacao(txtClassificacao.getText());
-            f.setValor((Double.parseDouble(txtValor.getText()))*opcao);
-            f.setDataRealizado(dataSQL);
-
+            f.setValor((Double.parseDouble(txtValor.getText())) * opcao);
+            f.setDataRealizado(new Date(formato.parse(jFTFdataentrada.getText()).getTime()));
             daoFinancas.setFinancas(f);
+
             JOptionPane.showMessageDialog(this, "Informação adicionada com sucesso!");
             listagemTabela(); // Atualiza a tabela após adicionar
 
         } catch (SQLException ex) {
+            Logger.getLogger(TelaFinanancas.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ParseException ex) {
             Logger.getLogger(TelaFinanancas.class.getName()).log(Level.SEVERE, null, ex);
         }
 
@@ -472,7 +499,7 @@ public class TelaFinanancas extends javax.swing.JFrame {
     private void jBvoltarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBvoltarActionPerformed
         try {
             daoFinancas.refazerExclusao();
-            
+            listagemTabela();
             // TODO add your handling code here:
         } catch (SQLException ex) {
             Logger.getLogger(TelaFinanancas.class.getName()).log(Level.SEVERE, null, ex);
@@ -509,11 +536,19 @@ public class TelaFinanancas extends javax.swing.JFrame {
             financasDAO dao = new financasDAO(); // Certifique-se de que seu DAO esteja criado corretamente
             List<financasModel> financasFiltradas = dao.getFinancasTimeStamp(dataInicial, dataFinal);
 
-            // Atualiza a tabela usando o método listagemTabela
-            listagemTabela(financasFiltradas);
+            if (financasFiltradas.isEmpty()) {
+                listagemTabela();
+
+                JOptionPane.showMessageDialog(null, "nenhum registro encontrado");
+
+            } else {
+
+                // Atualiza a tabela usando o método listagemTabela
+                listagemTabela(financasFiltradas);
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
-            JOptionPane.showMessageDialog(null, "Erro ao filtrar dados: " + ex.getMessage());
+            JOptionPane.showMessageDialog(null, "Tente uma data válida. Erro ao filtrar dados: " + ex.getMessage());
         }
     }//GEN-LAST:event_buttonFiltrarActionPerformed
 
@@ -570,19 +605,19 @@ public class TelaFinanancas extends javax.swing.JFrame {
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jBvoltar;
     private javax.swing.JFormattedTextField jFTFdataentrada;
+    private javax.swing.JLabel jLDiferenca;
+    private javax.swing.JLabel jLGastos;
+    private javax.swing.JLabel jLRecebidos;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
-    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable;
+    private javax.swing.JTable jTBRegistros;
     private javax.swing.JTextField txtClassificacao;
     private javax.swing.JFormattedTextField txtDataFinal;
     private javax.swing.JFormattedTextField txtDataInicial;

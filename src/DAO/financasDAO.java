@@ -19,7 +19,6 @@ public class financasDAO {
     public financasDAO() {
         this.connection = Conexao.getConnection();
     }
-    
 
     public void setFinancas(String nome, double valor, String classificacao, Date datarealizada) throws SQLException {
         String sql = "INSERT INTO seuze(nome, valor, classificacao, datarealizado, datacadastrado)"
@@ -38,13 +37,13 @@ public class financasDAO {
         }
 
     }
-    
-    public void setFinancas(financasModel f) throws SQLException{
+
+    public void setFinancas(financasModel f) throws SQLException {
         String sql = "INSERT INTO seuze(nome, valor, classificacao, datarealizado, datacadastrado)"
                 + "values(?,?,?,?,?)";
         Calendar c = new GregorianCalendar();
 
-        try(PreparedStatement stmt = connection.prepareStatement(sql)) {
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, f.getNome());
             stmt.setDouble(2, f.getValor());
             stmt.setString(3, f.getClassificacao());
@@ -112,12 +111,14 @@ public class financasDAO {
 
     //Limita os registros ao mes atual
     public List<financasModel> getFinancasMesAtual() throws SQLException {
-        String sql = "SELECT * FROM seuze WHERE EXTRACT(MONTH FROM datarealizado) = ?";
+        String sql = "SELECT * FROM seuze WHERE EXTRACT(MONTH FROM datarealizado) = ? and EXTRACT(YEAR FROM datarealizado) = ?";
         List<financasModel> financas = new ArrayList<>();
         Calendar c = new GregorianCalendar();
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, c.get(Calendar.MONTH) + 1);
+            stmt.setInt(2, c.get(Calendar.YEAR));
+            
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     financas.add(new financasModel(
@@ -136,27 +137,67 @@ public class financasDAO {
         return financas;
     }
 
+    //busca no banco pelo id
+    private financasModel getFinancasAtID(int id) throws SQLException {
+        String sql = "SELECT * FROM seuze WHERE idValor = ?";
+        financasModel f;
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, id);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                rs.next();
+                f = new financasModel(
+                        rs.getInt("idValor"),
+                        rs.getString("nome"),
+                        rs.getString("classificacao"),
+                        rs.getDate("dataRealizado"),
+                        rs.getDate("dataCadastrado"),
+                        rs.getDouble("valor")
+                );
+            }
+        }
+        return f;
+    }
+
     //deleta linha da tabela com base no id do registro
     public void deleteFinanca(int id) throws SQLException {
+        
+        //Armazena o registro antes de exclui-lo
+        financasModel f = getFinancasAtID(id);
+        
+        
+        //Executa a query de DELETE pelo id fornecido
         String sql = "DELETE FROM seuze WHERE idvalor = ?";
 
         try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setInt(1, id);
-            int rowsDeleted = stmt.executeUpdate();
-            
-            
+            stmt.execute();
+        }
 
-            //stmt.execute();
+        
+        //Armazena no banco de backup
+        sql = "INSERT INTO refazerexclusao (nome, classificacao, dataRealizado, dataCadastrado, valor, idValor)"
+                + "VALUES (?,?,?,?,?,?);";
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, f.getNome());
+            stmt.setString(2, f.getClassificacao());
+            stmt.setDate(3, f.getDataRealizado());
+            stmt.setDate(4, f.getDataCadastrado());
+            stmt.setDouble(5, f.getValor());
+            stmt.setInt(6, f.getIdValor());
+
+            stmt.execute();
         }
 
     }
-    
-    public void refazerExclusao() throws SQLException{
-        String sql = "SELECT * FROM refazerexclusao ORDER BY 1 LIMIT 1";
+
+    public void refazerExclusao() throws SQLException {
+        String sql = "SELECT * FROM refazerexclusao ORDER BY ordemdeadicao DESC LIMIT 1";
         financasModel f = new financasModel();
-        try(PreparedStatement stmt = connection.prepareStatement(sql)){
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
             ResultSet rs = stmt.executeQuery();
-            while(rs.next()){
+            while (rs.next()) {
                 f.setIdValor(rs.getInt("idValor"));
                 f.setNome(rs.getString("nome"));
                 f.setClassificacao(rs.getString("classificacao"));
@@ -164,19 +205,25 @@ public class financasDAO {
                 f.setDataCadastrado(rs.getDate("dataCadastrado"));
                 f.setValor(rs.getDouble("valor"));
             }
-            
+
         }
-        
+
         sql = "INSERT INTO seuze (nome, classificacao, dataRealizado, dataCadastrado, valor, idValor)"
                 + "VALUES (?,?,?,?,?,?);"
                 + "DELETE FROM refazerexclusao WHERE idValor = ?";
-        
-        try(PreparedStatement stmt = connection.prepareStatement(sql)){
-            stmt.setInt(1,f.getIdValor());
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, f.getNome());
+            stmt.setString(2, f.getClassificacao());
+            stmt.setDate(3, f.getDataRealizado());
+            stmt.setDate(4, f.getDataCadastrado());
+            stmt.setDouble(5, f.getValor());
+            stmt.setInt(6, f.getIdValor());
+            stmt.setInt(7, f.getIdValor());
+
             stmt.execute();
         }
-        
+
     }
-    
 
 }
