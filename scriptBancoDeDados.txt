@@ -1,0 +1,20 @@
+CREATE TABLE seuze
+(
+	idValor serial PRIMARY KEY,
+	nome varchar(120),
+	classificacao varchar(120),
+	datarealizado date,
+	datacadastrado date,
+	valor double precision
+)
+
+CREATE TABLE refazerexclusao
+(
+	idValor int PRIMARY KEY,
+	nome varchar(120),
+	classificacao varchar(120),
+	datarealizado date,
+	datacadastrado date,
+	valor double precision,
+	ordemdeadicao serial
+)
